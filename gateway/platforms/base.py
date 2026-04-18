@@ -656,36 +656,40 @@ class ProcessingOutcome(Enum):
 class MessageEvent:
     """
     Incoming message from a platform.
-    
+
     Normalized representation that all adapters produce.
     """
     # Message content
     text: str
     message_type: MessageType = MessageType.TEXT
-    
+
     # Source information
     source: SessionSource = None
-    
+
     # Original platform data
     raw_message: Any = None
     message_id: Optional[str] = None
-    
+
     # Media attachments
     # media_urls: local file paths (for vision tool access)
     media_urls: List[str] = field(default_factory=list)
     media_types: List[str] = field(default_factory=list)
-    
+
     # Reply context
     reply_to_message_id: Optional[str] = None
     reply_to_text: Optional[str] = None  # Text of the replied-to message (for context injection)
-    
+
     # Auto-loaded skill(s) for topic/channel bindings (e.g., Telegram DM Topics,
     # Discord channel_skill_bindings).  A single name or ordered list.
     auto_skill: Optional[str | list[str]] = None
-    
+
     # Internal flag — set for synthetic events (e.g. background process
     # completion notifications) that must bypass user authorization checks.
     internal: bool = False
+
+    # External authentication data from platform-specific custom auth webhooks
+    # Contains permissions/roles/etc returned by the external auth service
+    external_auth: Optional[Dict[str, Any]] = None
 
     # Timestamps
     timestamp: datetime = field(default_factory=datetime.now)
